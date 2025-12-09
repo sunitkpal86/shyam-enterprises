@@ -1,0 +1,93 @@
+
+
+
+<div class="container">
+<!-- Search & Filters -->
+<div class="card mb-4 p-3">
+<div class="row g-2 align-items-center">
+<div class="col-md-5">
+<input [(ngModel)]="searchTerm" (input)="applyFilters()" class="form-control" placeholder="Search by title, neighborhood..." />
+</div>
+<div class="col-md-3">
+<select [(ngModel)]="transactionFilter" (change)="applyFilters()" class="form-select">
+<option value="">Any</option>
+<option value="Rent">Rent</option>
+<option value="Buy">Buy</option>
+<option value="Sale">Sale</option>
+</select>
+</div>
+<div class="col-md-2">
+<select [(ngModel)]="selectedCity" (change)="applyFilters()" class="form-select">
+<option value="">Any City</option>
+<option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+</select>
+</div>
+<div class="col-md-2 d-grid">
+<button class="btn btn-outline-secondary" (click)="clearFilters()">Clear</button>
+</div>
+</div>
+</div>
+
+
+<!-- Listings grid -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+<div *ngFor="let l of filtered" class="col">
+<div class="card h-100 shadow-sm">
+<img [src]="l.imageUrl" class="card-img-top" alt="{{ l.title }}" style="object-fit: cover; height: 200px;" />
+<div class="card-body d-flex flex-column">
+<h5 class="card-title">{{ l.title }}</h5>
+<p class="card-text mb-1">{{ l.shortDesc }}</p>
+<ul class="list-inline small text-muted mb-2">
+<li class="list-inline-item">{{ l.bedrooms }} bd</li>
+<li class="list-inline-item">{{ l.bathrooms }} ba</li>
+<li class="list-inline-item">{{ l.areaSqFt }} sqft</li>
+</ul>
+
+
+<div class="mt-auto d-flex justify-content-between align-items-center">
+<div>
+<strong>
+<span *ngIf="l.transaction === 'Rent'">₹{{ l.price | number }}</span>
+<span *ngIf="l.transaction !== 'Rent'">₹{{ l.price | number }}</span>
+</strong>
+<div class="small text-muted">{{ l.city }} — {{ l.transaction }}</div>
+</div>
+<div>
+<button class="btn btn-primary btn-sm" (click)="openDetail(l)" data-bs-toggle="modal" data-bs-target="#detailModal">View</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- Detail Modal -->
+<div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title">{{ selectedListing?.title }}</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+<div *ngIf="selectedListing">
+<img [src]="selectedListing.imageUrl" class="img-fluid mb-3" alt="{{ selectedListing.title }}" />
+<p>{{ selectedListing.shortDesc }}</p>
+<ul>
+<li>Bedrooms: {{ selectedListing.bedrooms }}</li>
+<li>Bathrooms: {{ selectedListing.bathrooms }}</li>
+<li>Area: {{ selectedListing.areaSqFt }} sqft</li>
+<li>City: {{ selectedListing.city }}</li>
+</ul>
+<h4>Price: ₹{{ selectedListing.price | number }}</h4>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+<button type="button" class="btn btn-success">Contact Seller</button>
+</div>
+</div>
+</div>
+</div>
+</div>
